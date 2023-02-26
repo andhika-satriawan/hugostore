@@ -15,4 +15,14 @@ class ProductSubcategory extends Model
         'name',
         'slug'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id', 'id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

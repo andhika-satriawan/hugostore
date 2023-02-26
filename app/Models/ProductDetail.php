@@ -15,7 +15,7 @@ class ProductDetail extends Model
         'sku',
         'name',
         'image',
-        'purchase_price',
+        'discount_price',
         'price',
         'weight',
         'width',
@@ -23,4 +23,29 @@ class ProductDetail extends Model
         'height',
         'status'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function gifts()
+    {
+        return $this->hasMany(Gift::class);
+    }
+
+    public function sale_details()
+    {
+        return $this->hasMany(SaleDetail::class);
+    }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }

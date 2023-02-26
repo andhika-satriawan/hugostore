@@ -20,4 +20,14 @@ class Gift extends Model
         'price',
         'address'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
+    public function product_detail()
+    {
+        return $this->belongsTo(ProductDetail::class, 'product_detail_id', 'id');
+    }
 }

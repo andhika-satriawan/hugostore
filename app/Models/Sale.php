@@ -28,4 +28,14 @@ class Sale extends Model
         'transaction_status',
         'transaction_source'
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+
+    public function sale_details()
+    {
+        return $this->hasMany(SaleDetail::class);
+    }
 }

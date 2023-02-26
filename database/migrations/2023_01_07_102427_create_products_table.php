@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->longText('description');
             $table->string('photo');
-            $table->unsignedInteger('status');
+            $table->unsignedInteger('status'); // 0 = tidak aktif || 1 = tidak aktif || 2 = draft
             $table->timestamps();
         });
     }

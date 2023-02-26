@@ -20,4 +20,19 @@ class Customer extends Model
         'password',
         'remember_token'
     ];
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }

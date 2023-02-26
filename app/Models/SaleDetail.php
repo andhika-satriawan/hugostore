@@ -22,4 +22,19 @@ class SaleDetail extends Model
         'sub_total',
         'warranty_no'
     ];
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class, 'sale_id', 'id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
+    public function product_detail()
+    {
+        return $this->belongsTo(ProductDetail::class, 'product_detail_id', 'id');
+    }
 }

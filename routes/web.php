@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductSubCategoryController;
+use App\Http\Controllers\ProductBrandController;
+use App\Http\Controllers\ProductBrandTypeController;
+use App\Http\Controllers\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,33 +25,20 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('pages.dashboard');
 });
 
-Route::get('/sales', function () {
-    return view('sales');
-});
+// Route::get('/supplier', function () {
+//     return view('pages.supplier.index');
+// });
 
-Route::get('/customers', function () {
-    return view('customers');
-});
+// Route::get('/supplier', [SupplierController::class, 'index']);
+Route::resource('/supplier', SupplierController::class);
 
-Route::get('/all-products', function () {
-    return view('all-products');
-});
+Route::resource('/product/category', ProductCategoryController::class);
+Route::resource('/product/subcategory', ProductSubCategoryController::class);
 
-Route::get('/add-new-product', function () {
-    return view('add-new-product');
-});
+Route::resource('/product/brand', ProductBrandController::class);
+Route::resource('/product/brandtype', ProductBrandTypeController::class);
 
-Route::get('/product-categories', function () {
-    return view('product-categories');
-});
-
-Route::get('/tags', function () {
-    return view('tags');
-});
-
-Route::get('/reviews', function () {
-    return view('reviews');
-});
+Route::resource('/product', ProductController::class);
