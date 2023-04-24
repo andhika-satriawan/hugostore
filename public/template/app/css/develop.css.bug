@@ -1,0 +1,64 @@
+.single-product .swiper-wrapper.lightgallery,
+.single-product .swiper-wrapper.lightgallery .swiper-slide {
+    height: auto !important;
+}
+
+.single-product .swiper-wrapper.lightgallery .swiper-slide img {
+    width: auto;
+    height: 400px;
+}
+
+.single-product h4 {
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+p.wcrw_warranty_info {
+    float: left;
+}
+
+p.wcrw_warranty_info strong {
+    margin-right: 10px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 14px 20px;
+}
+
+p.wcrw_warranty_info select {
+    margin-right: 10px;
+    background: #fff;
+    position: relative;
+    height: 45px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #eee;
+}
+
+.woocommerce .quantity .qty {
+    width: 60px;
+    float: left;
+    margin-right: 10px;
+    background: #fff;
+    position: relative;
+    height: 45px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #eee;
+}
+
+ul.post-counter {
+    float: right;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    margin-top: 0;
+    padding: 12px 20px;
+}
+
+body.post-type-archive-product .grid-item_price span {
+    font-size: 14px;
+}
+body.post-type-archive-product a.button.wp-element-button.product_type_simple.add_to_cart_button.add_cart {
+    background: #F57500;
+    color: #fff;
+    border-radius: 5px;
+}
