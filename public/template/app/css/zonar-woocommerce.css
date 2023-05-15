@@ -96,6 +96,10 @@
 	color:#fff;
 }
 
+a.remove.remove-cart:hover {
+    cursor: pointer;
+}
+
 .product .post-det h3 span {
     position: absolute;
     right: 0;

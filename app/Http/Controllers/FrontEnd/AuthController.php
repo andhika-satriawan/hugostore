@@ -6,15 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Customer;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
+    protected function guard()
+    {
+        return Auth::guard('customer');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -28,9 +33,10 @@ class AuthController extends Controller
             'email' => 'required|email',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('customer')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/my-account');
+            // return redirect()->intended('/my-account');
+            return to_route('my-account')->with('success', 'Login Success!');
         }
 
         return back()->withErrors([
@@ -68,7 +74,7 @@ class AuthController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard('customer')->logout();
 
         $request->session()->invalidate();
 
@@ -87,19 +93,17 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'password' => 'required|string|max:255',
-            'email' => 'required|unique:users,email',
-            'role'  => 'required|numeric'
+            'email' => 'required|unique:customers,email',
         ]);
 
-        $user = new User;
+        $customer = new Customer;
 
-        $user->name = $request->name;
-        $user->password = Hash::make($request->password);
-        $user->email = $request->email;
-        $user->role = $request->role;
+        $customer->name = $request->name;
+        $customer->password = Hash::make($request->password);
+        $customer->email = $request->email;
 
-        $user->save();
+        $customer->save();
 
-        return to_route('user.login')->with('success', 'Input Data Success!');
+        return to_route('customer.login')->with('success', 'Input Data Success!');
     }
 }

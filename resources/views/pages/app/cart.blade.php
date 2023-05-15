@@ -16,40 +16,24 @@
                 <div class="container  wr-default-page">
                     <div class="woocommerce">
                         <div class="woocommerce-notices-wrapper"></div>
-                        <form class="woocommerce-cart-form " action="https://webredox.net/demo/wp/zonar/cart/" method="post">
-                            <div class="pr-subtitle">Your Cart <span class="show-cart_count_main">1 item</span></div>
-                            <div class="section-separator sp2 fl-wrap"><span></span></div>
-                            <div class="clear"></div>
-                            <table class="table table-border checkout-table woocommerce-cart-form__contents"
-                                cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th class="hidden-xs">Product</th>
-                                        <th>Description</th>
-                                        <th class="hidden-xs">Price</th>
-                                        <th>Quantity</th>
-                                        <th>Subtotal</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="item-cart">
-                                    {{-- item disini di generate AJAX --}}
-                                <tbody>
-                            </table>
-                            <!-- COUPON -->
-                            <div class="coupon-holder">
-                                <input type="text" name="coupon_code" class="input-text" id="coupon_code" value=""
-                                    placeholder="Coupon code">
-                                <button type="submit" class="btn-a" name="apply_coupon" value="Apply coupon">Apply
-                                    coupon</button>
-                                <button type="submit" class="pull-right btn-uc" name="update_cart" value="Update cart"
-                                    disabled="" aria-disabled="true">Update cart</button>
-                                <input type="hidden" id="woocommerce-cart-nonce" name="woocommerce-cart-nonce"
-                                    value="32129b3ec5"><input type="hidden" name="_wp_http_referer"
-                                    value="/demo/wp/zonar/cart/">
-                            </div>
-                            <!-- /COUPON -->
-                        </form>
+                        <div class="pr-subtitle">Your Cart <span class="show-cart_count_main">1 item</span></div>
+                        <div class="section-separator sp2 fl-wrap"><span></span></div>
+                        <div class="clear"></div>
+                        <table class="table table-border checkout-table woocommerce-cart-form__contents" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="hidden-xs">Product</th>
+                                    <th>Description</th>
+                                    <th class="hidden-xs">Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="item-cart">
+                                {{-- item disini di generate AJAX --}}
+                            <tbody>
+                        </table>
 
                         <div class="cart-collaterals">
                             <div class="cart_totals ">
@@ -130,20 +114,123 @@
 
 @push('add-script')
     <script>
+        jQuery(document).on('change', ".cart-quantity", function($) {
+            const product_id = jQuery(this).closest('tr').data('product-id');
+            const product_detail_id = jQuery(this).closest('tr').data('product-detail-id');
+            const quantity = jQuery(this).val();
+            // console.log(product_id);
+            // console.log(product_detail_id);
+            // console.log(quantity);
+
+            jQuery.ajax({
+                type: 'PATCH',
+                url: "{{ route('update-cart') }}",
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'product_id': product_id,
+                    'product_detail_id': product_detail_id,
+                    'quantity': quantity
+                },
+                dataType: 'JSON',
+                beforeSend: function() {
+
+                    jQuery('.loader').show();
+                    jQuery(".loading-text-container ").css("top", '50%');
+                    jQuery(".loading-text-container ").css("opacity", '1');
+                    jQuery(".loader-anim").css("bottom", '0');
+                    jQuery(".loader-anim2").css("bottom", '0');
+                    initZonar();
+
+                    jQuery(this).attr('readonly', true)
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.success == true) {
+                        // location.reload();
+                        if (response.success == true) {
+                            const cartData = response.cart;
+                            const cartHTML = cartData.map((e, index) => {
+                                return `
+                                    <tr class="woocommerce-cart-form__cart-item cart_item" data-product-id="${e.product.id}" data-product-detail-id="${e.product_detail.id}">
+                                        <td class="hidden-xs">
+                                            <a href="http://hugostore.test/single-product/${e.product.slug}">
+                                                <img width="800" height="560"
+                                                src="http://hugostore.test/storage/${e.product.photo}"
+                                                class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+                                                alt="${e.product.name}" decoding="async" loading="lazy">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <h5 class="product-name">
+                                                <a href="http://hugostore.test/single-product/${e.product.slug}">
+                                                    ${e.product.name}
+                                                </a>
+                                            </h5>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <h5 class="order-money">
+                                                <span class="woocommerce-Price-amount amount">
+                                                    <bdi>
+                                                        <span class="woocommerce-Price-currencySymbol">Rp</span>
+                                                        ${e.product_detail.price}
+                                                    </bdi>
+                                                </span>
+                                            </h5>
+                                        </td>
+                                        <td>
+                                            <div class="quantity">
+                                                <label class="screen-reader-text" for="quantity_640ec9e6aeb54">
+                                                    ${e.product.name} quantity
+                                                </label>
+                                                <input type="number" class="input-text qty text cart-quantity" value="${e.quantity}"
+                                                    title="Qty" size="4" min="1" max=""
+                                                    step="1" placeholder="" inputmode="numeric" autocomplete="off">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5 class="order-money">
+                                                <span class="woocommerce-Price-amount amount">
+                                                    <bdi>
+                                                        <span class="woocommerce-Price-currencySymbol">Rp</span>
+                                                        ${e.product_detail.price * e.quantity}
+                                                    </bdi>
+                                                </span>
+                                            </h5>
+                                        </td>
+                                        <td class="pr-remove product-remove">
+                                            <a class="remove remove-cart" aria-label="Remove this item"><i class="fal fa-times"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `
+                            })
+                            jQuery('#item-cart').html('').append(cartHTML);
+                            jQuery('#subtotal').text(response.subtotal);
+                            jQuery('#total').text(response.subtotal);
+                        }
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+
         jQuery(document).ready(function($) {
             $.ajax({
                 type: 'GET',
-                url: "{{ route('get_cart_data') }}",
+                url: "{{ route('get-cart') }}",
                 data: {
                     '_token': '{{ csrf_token() }}'
                 },
                 dataType: 'JSON',
                 success: function(response) {
+                    console.log(response);
                     if (response.success == true) {
                         const cartData = response.cart;
                         const cartHTML = cartData.map((e, index) => {
                             return `
-                            <tr class="woocommerce-cart-form__cart-item cart_item">
+                            <tr class="woocommerce-cart-form__cart-item cart_item" data-product-id="${e.product.id}" data-product-detail-id="${e.product_detail.id}">
                                 <td class="hidden-xs">
                                     <a href="http://hugostore.test/single-product/${e.product.slug}">
                                         <img width="800" height="560"
@@ -174,9 +261,7 @@
                                         <label class="screen-reader-text" for="quantity_640ec9e6aeb54">
                                             ${e.product.name} quantity
                                         </label>
-                                        <input type="number" id="quantity_640ec9e6aeb54"
-                                            class="input-text qty text"
-                                            name="cart[caf1a3dfb505ffed0d024130f58c5cfa][qty]" value="${e.quantity}"
+                                        <input type="number" class="input-text qty text cart-quantity" value="${e.quantity}"
                                             title="Qty" size="4" min="0" max=""
                                             step="1" placeholder="" inputmode="numeric" autocomplete="off">
                                     </div>
@@ -192,10 +277,7 @@
                                     </h5>
                                 </td>
                                 <td class="pr-remove product-remove">
-                                    <a href="https://webredox.net/demo/wp/zonar/cart/?remove_item=caf1a3dfb505ffed0d024130f58c5cfa&amp;_wpnonce=32129b3ec5"
-                                        class="remove" aria-label="Remove this item" data-product_id="321"
-                                        data-product_sku=""><i class="fal fa-times"></i>
-                                    </a>
+                                    <a class="remove remove-cart" aria-label="Remove this item"><i class="fal fa-times"></i></a>
                                 </td>
                             </tr>
                             `
@@ -204,9 +286,103 @@
                         $('#subtotal').text(response.subtotal);
                         $('#total').text(response.subtotal);
                     }
-                }
+                },
 
+                error: function(error) {
+                    console.log(error);
+                }
             })
+        })
+
+        jQuery(document).on('click', ".remove-cart", function($) {
+            const product_id = jQuery(this).closest('tr').data('product-id');
+            const product_detail_id = jQuery(this).closest('tr').data('product-detail-id');
+            const quantity = jQuery(this).val();
+
+            jQuery.ajax({
+                type: 'DELETE',
+                url: "{{ route('delete-cart') }}",
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'product_id': product_id,
+                    'product_detail_id': product_detail_id,
+                },
+                dataType: 'JSON',
+                beforeSend: function() {
+                    // LOADER
+                    jQuery(this).attr('onclick', 'return false');
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.success == true) {
+                        // location.reload();
+                        if (response.success == true) {
+                            const cartData = response.cart;
+                            const cartHTML = cartData.map((e, index) => {
+                                return `
+                                    <tr class="woocommerce-cart-form__cart-item cart_item" data-product-id="${e.product.id}" data-product-detail-id="${e.product_detail.id}">
+                                        <td class="hidden-xs">
+                                            <a href="http://hugostore.test/single-product/${e.product.slug}">
+                                                <img width="800" height="560"
+                                                src="http://hugostore.test/storage/${e.product.photo}"
+                                                class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+                                                alt="${e.product.name}" decoding="async" loading="lazy">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <h5 class="product-name">
+                                                <a href="http://hugostore.test/single-product/${e.product.slug}">
+                                                    ${e.product.name}
+                                                </a>
+                                            </h5>
+                                        </td>
+                                        <td class="hidden-xs">
+                                            <h5 class="order-money">
+                                                <span class="woocommerce-Price-amount amount">
+                                                    <bdi>
+                                                        <span class="woocommerce-Price-currencySymbol">Rp</span>
+                                                        ${e.product_detail.price}
+                                                    </bdi>
+                                                </span>
+                                            </h5>
+                                        </td>
+                                        <td>
+                                            <div class="quantity">
+                                                <label class="screen-reader-text" for="quantity_640ec9e6aeb54">
+                                                    ${e.product.name} quantity
+                                                </label>
+                                                <input type="number" class="input-text qty text cart-quantity" value="${e.quantity}"
+                                                    title="Qty" size="4" min="1" max=""
+                                                    step="1" placeholder="" inputmode="numeric" autocomplete="off">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5 class="order-money">
+                                                <span class="woocommerce-Price-amount amount">
+                                                    <bdi>
+                                                        <span class="woocommerce-Price-currencySymbol">Rp</span>
+                                                        ${e.product_detail.price * e.quantity}
+                                                    </bdi>
+                                                </span>
+                                            </h5>
+                                        </td>
+                                        <td class="pr-remove product-remove">
+                                            <a class="remove remove-cart" aria-label="Remove this item"><i class="fal fa-times"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `
+                            })
+                            jQuery('#item-cart').html('').append(cartHTML);
+                            jQuery('#subtotal').text(response.subtotal);
+                            jQuery('#total').text(response.subtotal);
+                        }
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
         })
     </script>
 @endpush

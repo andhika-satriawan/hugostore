@@ -60,9 +60,9 @@
                         <div class="form-group">
                             <label>Role</label>
                             <select class="select" name="role">
-                                <option value="1" selected>Admin</option>
-                                <option value="2">Kasir</option>
-                                <option value="3">Manager</option>
+                                <option value="1" selected>Customer</option>
+                                <option value="2">Admin</option>
+                                <option value="3">Super Admin</option>
                             </select>
                         </div>
                     </div>
@@ -109,77 +109,5 @@
                 text: 'Something went wrong!',
             });
         @endif
-
-        $(document).ready(function() {
-            $('#table_products').DataTable({
-                paging: false,
-                searching: false,
-                ajax: "{{ route('admin.product.index') }}",
-                columns: [{
-                        data: 'checkbox',
-                        name: 'checkbox'
-                    },
-                    {
-                        data: 'photo',
-                        name: 'photo'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'slug',
-                        name: 'slug'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
-                ]
-            });
-        });
-
-        function deleteData(id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: '{{ route('admin.product.index') }}/' + id,
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                        },
-                        dataType: 'JSON',
-                        error: function() {
-                            Swal.fire("Error!", 'Something is wrong', "error");
-                        },
-                        success: function(response) {
-                            if (response.success == true) {
-                                Swal.fire(
-                                    'Deleted!',
-                                    'Your file has been deleted.',
-                                    'success'
-                                );
-
-                                $('#table_product_categories').DataTable().ajax.reload();
-                            }
-                        }
-                    });
-                }
-            })
-        }
     </script>
 @endpush

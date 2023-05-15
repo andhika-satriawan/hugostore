@@ -54,9 +54,9 @@
                         <div class="form-group">
                             <label>Role</label>
                             <select class="select" name="role">
-                                <option value="1" selected>Admin</option>
-                                <option value="2">Kasir</option>
-                                <option value="3">Manager</option>
+                                <option value="1" selected>Customer</option>
+                                <option value="2">Admin</option>
+                                <option value="3">Super Admin</option>
                             </select>
                         </div>
                     </div>

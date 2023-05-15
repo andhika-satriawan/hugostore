@@ -67,7 +67,7 @@
                                 @endforeach
 
                                 <h2>Register</h2>
-                                <form method="post" action="{{ route('user.register-store') }}"
+                                <form method="post" action="{{ route('customer.register-store') }}"
                                     class="woocommerce-form woocommerce-form-register register">
                                     @csrf
                                     <input type="hidden" class="woocommerce-Input woocommerce-Input--text input-text"

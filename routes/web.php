@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FrontEnd\CartProductController;
 use App\Http\Controllers\FrontEnd\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -28,19 +29,24 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('guest')->group(function () {
-    Route::get('/user-login', [App\Http\Controllers\FrontEnd\AuthController::class, 'show'])->name('user.login');
-    Route::post('/user-login', [App\Http\Controllers\FrontEnd\AuthController::class, 'store'])->name('user.login-store');
-    Route::get('/user-register', [App\Http\Controllers\FrontEnd\AuthController::class, 'register'])->name('user.register');
-    Route::post('/user-register', [App\Http\Controllers\FrontEnd\AuthController::class, 'register_store'])->name('user.register-store');
+Route::middleware('guest:customer')->group(function () {
+    Route::get('/customer-login', [App\Http\Controllers\FrontEnd\AuthController::class, 'show'])->name('customer.login');
+    Route::post('/customer-login', [App\Http\Controllers\FrontEnd\AuthController::class, 'store'])->name('customer.login-store');
+    Route::get('/customer-register', [App\Http\Controllers\FrontEnd\AuthController::class, 'register'])->name('customer.register');
+    Route::post('/customer-register', [App\Http\Controllers\FrontEnd\AuthController::class, 'register_store'])->name('customer.register-store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:customer')->group(function () {
     Route::post('/user-logout', [App\Http\Controllers\FrontEnd\AuthController::class, 'destroy'])->name('user.logout');
     Route::get('/my-account', [App\Http\Controllers\FrontEnd\MyAccountController::class, 'index'])->name('my-account');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/cart', [App\Http\Controllers\FrontEnd\CartProductController::class, 'index'])->name('cart');
+    Route::get('/get-cart', [App\Http\Controllers\FrontEnd\CartProductController::class, 'getCartData'])->name('get-cart');
+    Route::post('/add-cart', [App\Http\Controllers\FrontEnd\CartProductController::class, 'addToCart'])->name('add-cart');
+    Route::patch('/update-cart', [App\Http\Controllers\FrontEnd\CartProductController::class, 'updateCart'])->name('update-cart');
+    Route::delete('/delete-cart', [App\Http\Controllers\FrontEnd\CartProductController::class, 'deleteCart'])->name('delete-cart');
 });
 
 require __DIR__ . '/auth.php';
@@ -52,7 +58,7 @@ Route::prefix('admin')
         Route::get('/', function () {
             return redirect()->route('admin.dashboard');
         });
-        Route::middleware('guest')->group(function () {
+        Route::middleware('guest:web')->group(function () {
             Route::get('login', [App\Http\Controllers\Admin\AuthController::class, 'show'])->name('login');
             Route::post('login', [App\Http\Controllers\Admin\AuthController::class, 'store'])->name('login.store');
         });
@@ -61,6 +67,7 @@ Route::prefix('admin')
             Route::get('dashboard', function () {
                 return view('pages.admin.index');
             })->name('dashboard');
+            Route::post('/logout', [App\Http\Controllers\Admin\AuthController::class, 'destroy'])->name('logout');
             Route::resource('supplier', App\Http\Controllers\Admin\SupplierController::class);
             Route::resource('product/category',  App\Http\Controllers\Admin\ProductCategoryController::class);
             Route::resource('product/subcategory', App\Http\Controllers\Admin\ProductSubCategoryController::class);

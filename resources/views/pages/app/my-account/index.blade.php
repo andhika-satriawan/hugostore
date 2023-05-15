@@ -64,8 +64,10 @@
                         <div class="woocommerce-MyAccount-content">
                             <div class="woocommerce-notices-wrapper"></div>
                             <p>
-                                Hello <strong>super_admin_123</strong> (not <strong>super_admin_123</strong>? <a
-                                    href="https://hugostore.id/my-account/customer-logout/?_wpnonce=5ba05db351">Log out</a>)
+                                Hello <strong>super_admin_123</strong> (not <strong>super_admin_123</strong>?
+                                <a class="pointer"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit()">Log
+                                    out</a>)
                             </p>
 
                             <p>

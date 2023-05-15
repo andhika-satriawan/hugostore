@@ -42,7 +42,18 @@ class UserController extends Controller
                     ';
                     return $btn;
                 })
-                ->rawColumns(['checkbox', 'action'])
+                ->addColumn('role', function ($row) {
+                    if ($row->role == 1) {
+                        $role = "Customer";
+                    } else if ($row->role == 2) {
+                        $role = "Admin";
+                    } else if ($row->role == 3) {
+                        $role = "Super Admin";
+                    }
+                    return $role;
+                })
+
+                ->rawColumns(['checkbox', 'action', 'role'])
                 ->make(true);
         }
 

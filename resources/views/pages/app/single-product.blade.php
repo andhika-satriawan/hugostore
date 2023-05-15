@@ -118,34 +118,30 @@
                         </div>
 
                         <div class="fl-wrap text-block">
-                            <form class="cart" action="" method="get" enctype='multipart/form-data'>
-                                <p class="wcrw_warranty_info"><strong>Warranty: </strong>
-                                    <select name="wcrw_warranty">
-                                        <option value="-1">No warranty</option>
-                                        <option value="0">12 Months &mdash;
-                                            <span class="woocommerce-Price-amount amount">
-                                                <bdi>
-                                                    <span class="woocommerce-Price-currencySymbol">Rp</span>20.000
-                                                </bdi>
-                                            </span>
+                            <p class="wcrw_warranty_info"><strong>Variant: </strong>
+                                <select name="product_variant">
+                                    <option value="">Choose Variant</option>
+                                    @foreach ($product->product_details as $product_detail)
+                                        <option value="{{ $product_detail->id }}">
+                                            {{ $product_detail->name }}
                                         </option>
-                                    </select>
-                                </p>
-                                <div class="qty_btn">
-                                    <div class="quantity">
-                                        <label class="screen-reader-text" for="quantity_6420373ee5745">{{ $product->name }}
-                                            quantity</label>
-                                        <input type="number" id="quantity_6420373ee5745" class="input-text qty text"
-                                            name="quantity" value="1" title="Qty" size="4" min="1"
-                                            max="" step="1" placeholder="" inputmode="numeric"
-                                            autocomplete="off" />
-                                    </div>
-                                    <button type="submit" name="add-to-cart" value="835"
-                                        class="zo-woo-button btn flat-btn color-bg">
-                                        <span>Add to cart</span>
-                                    </button>
+                                    @endforeach
+                                </select>
+                            </p>
+                            <div class="qty_btn">
+                                <div class="quantity">
+                                    <label class="screen-reader-text" for="quantity_6420373ee5745">{{ $product->name }}
+                                        quantity</label>
+                                    <input type="number" id="quantity_6420373ee5745" class="input-text qty text"
+                                        name="quantity" value="1" title="Qty" size="4" min="1"
+                                        max="" step="1" placeholder="" inputmode="numeric"
+                                        autocomplete="off" />
                                 </div>
-                            </form>
+                                <button id="add-to-cart" type="button" name="add-to-cart"
+                                    class="zo-woo-button btn flat-btn color-bg">
+                                    <span>Add to cart</span>
+                                </button>
+                            </div>
 
                             <ul class="post-counter">
                                 <li class="price">
@@ -163,7 +159,7 @@
                         </div>
                         <div class="clearfix"></div>
 
-                        <div class="woocommerce-notices-wrapper">
+                        {{-- <div class="woocommerce-notices-wrapper">
                             <div class="woocommerce-message" role="alert">
                                 <a href="{{ url('/cart') }}" tabindex="1"
                                     class="button wc-forward wp-element-button">
@@ -171,7 +167,7 @@
                                 </a>
                                 “{{ $product->name }}” has been added to your cart.
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="accordion mar-top zo-woo-tab">
                             <a class="toggle act-accordion" href="#">Reviews (0) <span></span></a>
@@ -346,20 +342,62 @@
     <!-- share-wrapper  end -->
 @endsection
 
-<script>
-    @if ($message = Session::get('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Success...',
-            text: 'Input Data Success!'
-        });
-    @endif
+@push('add-script')
+    <script src="{{ asset('template/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
+    <script>
+        @if ($message = Session::get('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success...',
+                text: 'Input Data Success!'
+            });
+        @endif
 
-    @if ($errors->any())
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong!',
-        });
-    @endif
-</script>
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            });
+        @endif
+
+
+        jQuery(document).on('click', "#add-to-cart", function() {
+            const product_detail_id = jQuery('select[name="product_variant"]').val();
+            const quantity = jQuery('input[name="quantity"]').val();
+
+            jQuery.ajax({
+                type: 'POST',
+                url: "{{ route('add-cart') }}",
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'product_id': '{{ $product->id }}',
+                    'product_detail_id': product_detail_id,
+                    'quantity': quantity
+                },
+                dataType: 'JSON',
+                success: function(response) {
+                    console.log(response);
+                    if (response.success == true) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success...',
+                            text: response.message,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message,
+                        });
+                    }
+                },
+
+                error: function(error) {
+                    console.log(error);
+                }
+
+            })
+        })
+    </script>
+@endpush

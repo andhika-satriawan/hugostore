@@ -147,7 +147,7 @@
     <script src="{{ asset('template/js/bootstrap-datetimepicker.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/sweetalert/sweetalerts.min.js') }}"></script>
+    {{-- <script src="{{ asset('template/plugins/sweetalert/sweetalerts.min.js') }}"></script> --}}
 
     <script>
         $(document).ready(function() {

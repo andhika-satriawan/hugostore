@@ -11,7 +11,9 @@
                 <form method="POST" action="{{ route('admin.login.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="login-logo">
-                        <img src="{{ asset('template/img/logo.png') }}" alt="img">
+                        <a href="{{ asset('/') }}">
+                            <img src="{{ asset('template/img/logo.png') }}" alt="img">
+                        </a>
                     </div>
                     <div class="login-userheading">
                         <h3>Sign In</h3>
@@ -44,9 +46,6 @@
                     </div>
                     <div class="form-login">
                         <button type="submit" class="btn btn-login">Sign In</button>
-                    </div>
-                    <div class="signinform text-center">
-                        <h4>Don't have an account? <a href="signup.html" class="hover-a">Sign Up</a></h4>
                     </div>
                 </form>
             </div>

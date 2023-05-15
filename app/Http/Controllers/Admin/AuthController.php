@@ -13,6 +13,11 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
+    protected function guard()
+    {
+        return Auth::guard('web');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -26,8 +31,8 @@ class AuthController extends Controller
             'email' => 'required|email',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->role == 2) {
+        if (Auth::guard('web')->attempt($credentials)) {
+            if (Auth::guard('web')->user()->role == 2) {
                 $request->session()->regenerate();
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
@@ -60,6 +65,6 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/admin/login');
     }
 }

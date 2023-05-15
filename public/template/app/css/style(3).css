@@ -681,12 +681,18 @@ blockquote p {
 	top:50%;
 } */
 .page-subtitle.logout a {
-    margin-right: 100px;
     padding: 10px 20px;
     background: rgba(0,0,0,0.1);
     position: relative;
     display: block;
 	color: #fff;
+	font-weight: bold;
+}
+.page-subtitle.logout a:hover {
+    background: red;
+}
+.pointer {
+    cursor: pointer;
 }
 
 /*------ btn ------------------------------------------------*/

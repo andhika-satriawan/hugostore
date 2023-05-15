@@ -47,7 +47,7 @@
                                 @endforeach
 
                                 <h2>Login</h2>
-                                <form action="{{ route('user.login-store') }}"
+                                <form action="{{ route('customer.login-store') }}"
                                     class="woocommerce-form woocommerce-form-login login" method="post"
                                     enctype="multipart/form-data">
                                     @csrf

@@ -199,7 +199,11 @@
                     <a class="dropdown-item" href="generalsettings.html"><i class="me-2"
                             data-feather="settings"></i>Settings</a>
                     <hr class="m-0" />
-                    <a class="dropdown-item logout pb-0" href="signin.html"><img
+                    <form action="{{ route('admin.logout') }}" method="post" id="logout-form">
+                        @csrf
+                    </form>
+                    <a class="dropdown-item logout pb-0"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit()"><img
                             src="{{ asset('template/img/icons/log-out.svg') }}" class="me-2"
                             alt="img" />Logout</a>
                 </div>
